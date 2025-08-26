@@ -27,7 +27,7 @@ export default async function Layout({
       />
       <DataStreamProvider>
         <SidebarProvider defaultOpen={defaultOpen}>
-          <AppSidebar user={user} />
+          <AppSidebar user={user} className="left-20" />
           <SidebarInset>
             {children}
             {/* Global command palette in chat area */}

@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 import './globals.css';
 import TourProvider from '@/components/providers/tour-provider';
+import MainNav from '@/components/main-nav';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.ai4.ceo'),
@@ -89,7 +90,12 @@ export default async function RootLayout({
         >
           <TourProvider>
             <Toaster position="top-center" />
-            {children}
+            {/* Global compact main navigation */}
+            <MainNav />
+            {/* Offset all pages by main nav width */}
+            <div className="pl-20">
+              {children}
+            </div>
           </TourProvider>
         </ThemeProvider>
       </body>
