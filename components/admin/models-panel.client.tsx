@@ -263,13 +263,13 @@ export default function AdminModelsPanel() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="pb-4">
         {banner && (
-          <div className="mt-3 text-sm px-3 py-2 rounded-md border bg-muted/30 inline-block">
-            {banner}
+          <div className="pb-4">
+              <div className="mt-3 text-sm px-3 py-2 rounded-md border bg-muted/30 inline-block">
+                {banner}
+              </div>
           </div>
         )}
-      </div>
 
       <div className="space-y-4">
         {/* Chat Models Availability */}

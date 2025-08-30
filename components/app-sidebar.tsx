@@ -26,7 +26,58 @@ export type MinimalUser = {
   role?: 'user' | 'admin';
 };
 
-export function AppSidebar({ user }: { user: MinimalUser | undefined }) {
+export function MainSidebar({ }) {
+  return (
+    <Sidebar
+      style={
+        {
+          '--sidebar-width': 336,
+        } as React.CSSProperties
+      }>
+      <SidebarHeader>
+        <SidebarMenu>
+          <div className="flex flex-row justify-between items-center">
+            <Link href="/" className="flex flex-row gap-3 items-center">
+              <span className="text-lg font-semibold p-2 hover:bg-sidebar-accent rounded-md cursor-pointer">
+                <Image src="/images/logo.svg" width={100} height={50} alt="Logo" />
+              </span>
+            </Link>
+          </div>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent className='flex flex-col justify-between border-y'>
+        <div className='p-2 space-y-1 absolute bottom-16 w-full bg-sidebar'>
+          <SidebarMenu>
+            <Link
+              href="/news"
+              className="flex items-center rounded-md p-2 text-sm hover:bg-sidebar-accent"
+            >
+              News
+            </Link>
+          </SidebarMenu>
+          <SidebarMenu>
+            <Link
+              href="/pricing"
+              className="flex items-center rounded-md p-2 text-sm hover:bg-sidebar-accent"
+            >
+              Pricing
+            </Link>
+          </SidebarMenu>
+          <SidebarMenu>
+            <Link
+              href="/about"
+              className="flex items-center rounded-md p-2 text-sm hover:bg-sidebar-accent"
+            >
+              About
+            </Link>
+          </SidebarMenu>
+        </div>
+      </SidebarContent>
+    </Sidebar>
+  )
+}
+
+export function AppSidebar({ user, className }: { user: MinimalUser | undefined; className?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
@@ -35,7 +86,7 @@ export function AppSidebar({ user }: { user: MinimalUser | undefined }) {
   if (pathname === '/onboarding' || pathname === '/billing' || pathname === '/pricing') return null;
 
   return (
-    <Sidebar className="group-data-[side=left]:border-r">
+    <Sidebar className={"group-data-[side=left]:border-r " + (className || '')}>
       <SidebarHeader>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">
@@ -94,7 +145,7 @@ export function AppSidebar({ user }: { user: MinimalUser | undefined }) {
       <SidebarContent className='flex flex-col justify-between border-y'>
         <SidebarHistory user={user} />
 
-        <div className='p-2 space-y-1'>
+        {/*<div className='p-2 space-y-1 absolute bottom-16 w-full bg-sidebar'>
           {user?.role === 'admin' && (
             <SidebarMenu>
               <Link
@@ -124,7 +175,7 @@ export function AppSidebar({ user }: { user: MinimalUser | undefined }) {
               Settings
             </Link>
           </SidebarMenu>
-        </div>
+        </div>*/}
       </SidebarContent>
 
       <SidebarFooter>
