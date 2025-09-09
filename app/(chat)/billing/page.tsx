@@ -6,6 +6,24 @@ import { VoucherApplication } from '@/components/voucher-application';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
 import { CopySubscriptionIdButton } from '@/components/copy-subscription-id-button';
+import { BillingSubscribeClient } from '@/components/billing-subscribe.client';
+import { BillingPlansSwitcher } from '@/components/billing-plans-switcher';
+
+type Plan = {
+  id: string;
+  name: string;
+  price: number; // in smallest currency unit or major for IDR
+  currency?: string; // e.g., IDR
+  description?: string;
+  features?: string[];
+  popular?: boolean;
+  contact?: boolean; // contact sales instead of direct subscribe
+};
+
+function formatPrice(amount: number, currency?: string) {
+  if (!currency || currency.toUpperCase() === 'IDR') return `IDR ${amount.toLocaleString()}`;
+  return `${currency.toUpperCase()} ${amount / 100}`;
+}
 
 function formatPlanId(id: string | null | undefined) {
   if (!id) return '';
@@ -32,6 +50,114 @@ export default async function BillingPage() {
     getSettings(),
   ]);
 
+  const pricing = (settings?.pricingPlans as any) || {};
+  const monthly: Plan[] = Array.isArray(pricing.monthly)
+    ? pricing.monthly
+    : [
+      // Core — monthly
+      {
+        id: 'core_monthly',
+        name: 'Core',
+        price: 299000,
+        currency: 'IDR',
+        description: 'For individuals — essential capabilities',
+        features: [
+          '1 user account',
+          '~ 2,000 basic messages',
+          '~ 200 thinker messages',
+          'Advanced multi-expert system',
+          'Fine-tuned for business',
+          'Basic customer support',
+        ],
+      },
+      // Growth — monthly (Popular)
+      {
+        id: 'growth_monthly',
+        name: 'Growth',
+        price: 1999000,
+        currency: 'IDR',
+        description: 'For startups — advanced tools and analytics',
+        features: [
+          'More usage*',
+          '5 user accounts',
+          '~ 4,000 basic messages',
+          '~ 400 thinker messages',
+          'Priority customer support',
+        ],
+        popular: true,
+      },
+      // Enterprise — monthly (Contact sales)
+      {
+        id: 'enterprise_monthly',
+        name: 'Enterprise',
+        price: 0,
+        currency: 'IDR',
+        description: 'For corporations — comprehensive tools',
+        features: [
+          'More usage*',
+          'Unlimited user accounts',
+          'Unlimited messages',
+          'Customized multi-expert system',
+          'Customized fine-tuning support',
+          'Direct customer support',
+        ],
+        contact: true,
+      },
+    ];
+  const annual: Plan[] = Array.isArray(pricing.annual)
+    ? pricing.annual
+    : [
+      // Core — annual
+      {
+        id: 'core_annual',
+        name: 'Core (Annual)',
+        price: 2870400,
+        currency: 'IDR',
+        description: 'For individuals — billed yearly',
+        features: [
+          '1 user account',
+          '~ 2,000 basic messages',
+          '~ 200 thinker messages',
+          'Advanced multi-expert system',
+          'Fine-tuned for business',
+          'Basic customer support',
+        ],
+      },
+      // Growth — annual (Popular)
+      {
+        id: 'growth_annual',
+        name: 'Growth (Annual)',
+        price: 19190400,
+        currency: 'IDR',
+        description: 'For startups — billed yearly',
+        features: [
+          'More usage*',
+          '5 user accounts',
+          '~ 4,000 basic messages',
+          '~ 400 thinker messages',
+          'Priority customer support',
+        ],
+        popular: true,
+      },
+      // Enterprise — annual (Contact sales)
+      {
+        id: 'enterprise_annual',
+        name: 'Enterprise (Annual)',
+        price: 0,
+        currency: 'IDR',
+        description: 'For corporations — billed yearly',
+        features: [
+          'More usage*',
+          'Unlimited user accounts',
+          'Unlimited messages',
+          'Customized multi-expert system',
+          'Customized fine-tuning support',
+          'Direct customer support',
+        ],
+        contact: true,
+      },
+    ];
+
   return (
     <div className="mx-auto w-full max-w-[800px]">
       {/*<div>
@@ -42,7 +168,7 @@ export default async function BillingPage() {
       </div>*/}
 
       {/* Current Subscription Status */}
-      <div className="mx-auto w-full space-y-3">
+      <div className="mx-auto max-w-3xl space-y-4">
         <div className="rounded-xl border p-4">
 
           <div className="flex items-center justify-between">
@@ -64,14 +190,6 @@ export default async function BillingPage() {
                   <CopySubscriptionIdButton id={active.externalId} />
                 )}
               </div>
-              {active.currentPeriodEnd && (
-                <p>
-                  <span className="font-medium">
-                    {active.status === 'active' ? 'Renews' : 'Expires'}:
-                  </span>{' '}
-                  {new Date(active.currentPeriodEnd).toLocaleString()}
-                </p>
-              )}
             </div>
           ) : (
             <div className="space-y-2">
@@ -85,17 +203,20 @@ export default async function BillingPage() {
               </p>
             </div>
           )}
+          {active.currentPeriodEnd && (
+            <p className='text-sm'>
+              <span className="font-medium">
+                {active.status === 'active' ? 'Renews' : 'Expires'}:
+              </span>{' '}
+              {new Date(active.currentPeriodEnd).toLocaleString()}
+            </p>
+          )}
         </div>
 
         {/* Voucher Application */}
         <VoucherApplication refreshOnApplied />
 
-        {!active && (
-          <div className="rounded-xl border p-4 space-y-2">
-            <div className="text-sm">Looking for plans?</div>
-            <Link className="underline text-sm" href="/pricing">View Pricing</Link>
-          </div>
-        )}
+        <BillingPlansSwitcher monthly={monthly} annual={annual} />
 
         {/* Support Information */}
         <div className="text-sm text-muted-foreground space-y-2">

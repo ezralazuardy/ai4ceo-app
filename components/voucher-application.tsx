@@ -114,7 +114,7 @@ export function VoucherApplication({
   return (
     <div className='border p-4 rounded-xl space-y-3'>
       <div>
-        <span className="flex items-center gap-2 font-medium">
+        <span className="flex items-center gap-2 font-medium font-serif">
           Apply Voucher Code
         </span>
         <span className='text-sm'>
