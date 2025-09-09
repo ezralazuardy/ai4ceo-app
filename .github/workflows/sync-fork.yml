@@ -1,0 +1,16 @@
+name: Create Pull Request to Upstream
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wei/pull@v1
+        with:
+          source_repo: "lazuardytech/ai4ceo" # Replace with actual upstream repo
+          target_branch: "main" # Replace with your fork's target branch
+          github_token: ${{ secrets.TOKEN }}
