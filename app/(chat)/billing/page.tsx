@@ -1,9 +1,20 @@
+
 import { getCurrentUser } from '@/lib/auth-guard';
 import { getActiveSubscriptionByUserId, getSettings } from '@/lib/db/queries';
 import Link from 'next/link';
 import { VoucherApplication } from '@/components/voucher-application';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
+import { CopySubscriptionIdButton } from '@/components/copy-subscription-id-button';
+
+function formatPlanId(id: string | null | undefined) {
+  if (!id) return '';
+  return id
+    .split(/[_-]/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
 
 export default async function BillingPage() {
   const user = await getCurrentUser();
@@ -33,43 +44,41 @@ export default async function BillingPage() {
       {/* Current Subscription Status */}
       <div className="mx-auto w-full space-y-3">
         <div className="rounded-xl border p-4">
-          <h2 className="font-medium mb-3">Current Plan</h2>
+
+          <div className="flex items-center justify-between">
+            <h2 className="font-medium">Current Plan</h2>
+            <Badge
+              variant={active.status === 'active' ? 'default' : 'secondary'}
+              className={active.status === 'active' ? 'bg-green-600' : ''}
+            >
+              {active.status ? 'Active' : active.status === 'canceled' ? 'Canceled' : 'Expired'}
+            </Badge>
+          </div>
           {active ? (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-sm">Status:</span>
-                <Badge
-                  variant={active.status === 'active' ? 'default' : 'secondary'}
-                  className={active.status === 'active' ? 'bg-green-600' : ''}
-                >
-                  {active.status}
-                </Badge>
-              </div>
-              <div className="text-sm">
-                <p>
-                  <span className="font-medium">Plan:</span> {active.planId}
+            <div className="flex mt-2">
+              <div className='flex justify-between w-full'>
+                <p className='text-3xl font-bold '>
+                  {formatPlanId(active.planId)}
                 </p>
-                {active.currentPeriodEnd && (
-                  <p>
-                    <span className="font-medium">
-                      {active.status === 'active' ? 'Renews' : 'Expires'}:
-                    </span>{' '}
-                    {new Date(active.currentPeriodEnd).toLocaleString()}
-                  </p>
-                )}
                 {active.externalId && (
-                  <p className="text-muted-foreground mt-1">
-                    <span className="font-medium">Subscription ID:</span>{' '}
-                    {active.externalId}
-                  </p>
+                  <CopySubscriptionIdButton id={active.externalId} />
                 )}
               </div>
+              {active.currentPeriodEnd && (
+                <p>
+                  <span className="font-medium">
+                    {active.status === 'active' ? 'Renews' : 'Expires'}:
+                  </span>{' '}
+                  {new Date(active.currentPeriodEnd).toLocaleString()}
+                </p>
+              )}
             </div>
           ) : (
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm">Status:</span>
-                <Badge variant="outline">Free plan</Badge>
+                <p className='text-2xl font-bold '>
+                  Free Plan
+                </p>
               </div>
               <p className="text-sm text-muted-foreground">
                 You&apos;re on the free plan. Upgrade to Premium for higher limits, priority support, and advanced features.

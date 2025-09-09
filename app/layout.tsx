@@ -5,7 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 
 import './globals.css';
 import TourProvider from '@/components/providers/tour-provider';
-import MainNav from '@/components/main-nav';
+import AppShell from '@/components/app-shell';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://app.ai4.ceo'),
@@ -90,12 +90,10 @@ export default async function RootLayout({
         >
           <TourProvider>
             <Toaster position="top-center" />
-            {/* Global compact main navigation */}
-            <MainNav />
-            {/* Offset all pages by main nav width */}
-            <div className="pl-20">
+            {/* AppShell handles showing MainNav except on auth routes */}
+            <AppShell>
               {children}
-            </div>
+            </AppShell>
           </TourProvider>
         </ThemeProvider>
       </body>
