@@ -6,7 +6,6 @@ import { VoucherApplication } from '@/components/voucher-application';
 import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
 import { CopySubscriptionIdButton } from '@/components/copy-subscription-id-button';
-import { BillingSubscribeClient } from '@/components/billing-subscribe.client';
 import { BillingPlansSwitcher } from '@/components/billing-plans-switcher';
 
 type Plan = {

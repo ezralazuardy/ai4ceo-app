@@ -26,7 +26,7 @@ export type MinimalUser = {
   role?: 'user' | 'admin';
 };
 
-export function MainSidebar({ }) {
+export function MainSidebar() {
   return (
     <Sidebar
       style={
@@ -86,7 +86,7 @@ export function AppSidebar({ user, className }: { user: MinimalUser | undefined;
   if (pathname === '/onboarding' || pathname === '/billing' || pathname === '/pricing') return null;
 
   return (
-    <Sidebar className={"group-data-[side=left]:border-r " + (className || '')}>
+    <Sidebar className={`group-data-[side=left]:border-r ${className || ''}`}>
       <SidebarHeader>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">

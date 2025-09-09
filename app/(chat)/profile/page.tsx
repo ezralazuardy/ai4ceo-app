@@ -2,16 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSWRConfig } from 'swr';
-import Image from 'next/image';
-import Link from 'next/link';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import {
-  Avatar as UiAvatar,
-  AvatarFallback as UiAvatarFallback,
-  AvatarImage as UiAvatarImage,
-} from '@/components/ui/avatar';
 
 type Profile = {
   id: string;

@@ -151,7 +151,8 @@ export const suggestionsPlugin = new Plugin({
   },
   props: {
     decorations(state) {
-      return this.getState(state)?.decorations ?? DecorationSet.empty;
+      const pluginState = this.getState(state);
+      return (pluginState?.decorations ?? DecorationSet.empty) as any;
     },
   },
 });

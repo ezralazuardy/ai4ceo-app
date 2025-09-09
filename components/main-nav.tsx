@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { BotIcon } from './icons'
-import { Newspaper, Settings as SettingsIcon, Shield } from 'lucide-react'
+import { Settings as SettingsIcon, Shield } from 'lucide-react'
 
 function NavItem({ href, active, icon, label }: { href: string; active?: boolean; icon: React.ReactNode; label: string }) {
   return (
