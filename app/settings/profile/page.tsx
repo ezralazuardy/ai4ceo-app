@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from '@/components/ui/select';
 
 type Profile = {
   id: string;
@@ -45,6 +52,58 @@ export default function SettingsProfilePage() {
     { id: 'direct', label: 'Direct', emoji: '➡️', hint: 'Clear and straightforward' },
     { id: 'supportive', label: 'Supportive', emoji: '🤝', hint: 'Encouraging and helpful' },
   ] as const;
+
+  // Curated lists for usability; optional enhancement: detect via Intl APIs
+  const TIMEZONES = useMemo(
+    () => [
+      'UTC',
+      'America/Los_Angeles',
+      'America/Denver',
+      'America/Chicago',
+      'America/New_York',
+      'America/Sao_Paulo',
+      'Europe/London',
+      'Europe/Paris',
+      'Europe/Berlin',
+      'Europe/Madrid',
+      'Europe/Moscow',
+      'Africa/Johannesburg',
+      'Asia/Jakarta',
+      'Asia/Bangkok',
+      'Asia/Singapore',
+      'Asia/Hong_Kong',
+      'Asia/Tokyo',
+      'Asia/Seoul',
+      'Asia/Kolkata',
+      'Asia/Dubai',
+      'Australia/Sydney',
+      'Australia/Perth',
+      'Pacific/Auckland',
+    ],
+    [],
+  );
+
+  const LOCALES = useMemo(
+    () => [
+      { id: 'en-US', label: 'English (United States)' },
+      { id: 'en-GB', label: 'English (United Kingdom)' },
+      { id: 'id-ID', label: 'Indonesian (Indonesia)' },
+      { id: 'es-ES', label: 'Spanish (Spain)' },
+      { id: 'fr-FR', label: 'French (France)' },
+      { id: 'de-DE', label: 'German (Germany)' },
+      { id: 'pt-BR', label: 'Portuguese (Brazil)' },
+      { id: 'ru-RU', label: 'Russian (Russia)' },
+      { id: 'ar-SA', label: 'Arabic (Saudi Arabia)' },
+      { id: 'hi-IN', label: 'Hindi (India)' },
+      { id: 'ja-JP', label: 'Japanese (Japan)' },
+      { id: 'ko-KR', label: 'Korean (Korea)' },
+      { id: 'zh-CN', label: 'Chinese (Simplified, China)' },
+      { id: 'zh-TW', label: 'Chinese (Traditional, Taiwan)' },
+      { id: 'th-TH', label: 'Thai (Thailand)' },
+      { id: 'vi-VN', label: 'Vietnamese (Vietnam)' },
+    ],
+    [],
+  );
 
   const displayName = useMemo(() => {
     if (!profile) return '';
@@ -241,11 +300,35 @@ export default function SettingsProfilePage() {
                 <div className="grid gap-2 sm:grid-cols-2">
                   <div className="grid gap-2">
                     <Label htmlFor="timezone">Timezone</Label>
-                    <Input id="timezone" placeholder="e.g. America/Los_Angeles" value={timezone} onChange={(e) => setTimezone(e.target.value)} />
+                    <Select value={timezone || ''} onValueChange={(v) => setTimezone(v)}>
+                      <SelectTrigger id="timezone">
+                        <SelectValue placeholder="Select timezone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="undefined">Not set</SelectItem>
+                        {TIMEZONES.map((tz) => (
+                          <SelectItem key={tz} value={tz}>
+                            {tz}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="locale">Locale</Label>
-                    <Input id="locale" placeholder="e.g. en-US" value={locale} onChange={(e) => setLocale(e.target.value)} />
+                    <Select value={locale || ''} onValueChange={(v) => setLocale(v)}>
+                      <SelectTrigger id="locale">
+                        <SelectValue placeholder="Select locale" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={'undefined'}>Not set</SelectItem>
+                        {LOCALES.map((l) => (
+                          <SelectItem key={l.id} value={l.id}>
+                            {l.label} — {l.id}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -298,7 +381,7 @@ export default function SettingsProfilePage() {
           </div>
         </div>
 
-        {loading && (
+        {/*{loading && (
           <div className="p-4 pt-0 sm:p-4 sm:pt-0">
             <div className="grid gap-3">
               <div className="h-4 w-48 bg-muted rounded animate-pulse" />
@@ -306,7 +389,7 @@ export default function SettingsProfilePage() {
               <div className="h-20 w-full bg-muted rounded animate-pulse" />
             </div>
           </div>
-        )}
+        )}*/}
       </div>
 
       <div className="grid gap-3 p-3 sm:p-4 rounded-xl border">
@@ -339,11 +422,12 @@ export default function SettingsProfilePage() {
           {TRAITS.map((t) => {
             const selected = traits.includes(t.id);
             return (
-              <button
+              <Button
                 key={t.id}
                 type="button"
+                variant="outline"
                 aria-pressed={selected}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors hover:bg-accent ${selected ? 'border-primary text-primary bg-primary/10' : 'border-muted text-foreground'
+                className={`hover:grayscale-0 inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors hover:bg-accent ${selected ? 'border-primary text-primary bg-primary/10' : 'grayscale-100 text-foreground'
                   }`}
                 onClick={() =>
                   setTraits((prev) => (prev.includes(t.id) ? prev.filter((x) => x !== t.id) : [...prev, t.id]))
@@ -352,7 +436,7 @@ export default function SettingsProfilePage() {
               >
                 <span className="text-base leading-none">{t.emoji}</span>
                 <span className="font-medium leading-none">{t.label}</span>
-              </button>
+              </Button>
             );
           })}
         </div>

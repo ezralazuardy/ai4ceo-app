@@ -48,10 +48,10 @@ export default async function BillingPage() {
           <div className="flex items-center justify-between">
             <h2 className="font-medium">Current Plan</h2>
             <Badge
-              variant={active.status === 'active' ? 'default' : 'secondary'}
-              className={active.status === 'active' ? 'bg-green-600' : ''}
+              variant={active?.status === 'active' ? 'default' : 'secondary'}
+              className={active?.status === 'active' ? 'bg-green-600' : ''}
             >
-              {active.status ? 'Active' : active.status === 'canceled' ? 'Canceled' : 'Expired'}
+              {active?.status ? 'Active' : active?.status === 'canceled' ? 'Canceled' : 'Expired'}
             </Badge>
           </div>
           {active ? (
