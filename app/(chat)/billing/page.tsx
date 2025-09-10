@@ -167,7 +167,7 @@ export default async function BillingPage() {
       </div>*/}
 
       {/* Current Subscription Status */}
-      <div className="mx-auto max-w-3xl space-y-4">
+      <div className="mx-auto max-w-3xl space-y-4 py-10">
         <div className="rounded-xl border p-4">
 
           <div className="flex items-center justify-between">
