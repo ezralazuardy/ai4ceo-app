@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import type { Metadata } from 'next';
 import { CopySubscriptionIdButton } from '@/components/copy-subscription-id-button';
 import { BillingPlansSwitcher } from '@/components/billing-plans-switcher';
+import { PricingPlansForm } from '@/components/admin/pricing-plans-form.client';
 
 type Plan = {
   id: string;
@@ -17,6 +18,7 @@ type Plan = {
   features?: string[];
   popular?: boolean;
   contact?: boolean; // contact sales instead of direct subscribe
+  contactUrl?: string;
 };
 
 function formatPrice(amount: number, currency?: string) {
@@ -48,114 +50,11 @@ export default async function BillingPage() {
     getActiveSubscriptionByUserId({ userId: user.id }),
     getSettings(),
   ]);
+  const isAdmin = (user as any)?.role === 'admin';
 
   const pricing = (settings?.pricingPlans as any) || {};
-  const monthly: Plan[] = Array.isArray(pricing.monthly)
-    ? pricing.monthly
-    : [
-      // Core — monthly
-      {
-        id: 'core_monthly',
-        name: 'Core',
-        price: 299000,
-        currency: 'IDR',
-        description: 'For individuals — essential capabilities',
-        features: [
-          '1 user account',
-          '~ 2,000 basic messages',
-          '~ 200 thinker messages',
-          'Advanced multi-expert system',
-          'Fine-tuned for business',
-          'Basic customer support',
-        ],
-      },
-      // Growth — monthly (Popular)
-      {
-        id: 'growth_monthly',
-        name: 'Growth',
-        price: 1999000,
-        currency: 'IDR',
-        description: 'For startups — advanced tools and analytics',
-        features: [
-          'More usage*',
-          '5 user accounts',
-          '~ 4,000 basic messages',
-          '~ 400 thinker messages',
-          'Priority customer support',
-        ],
-        popular: true,
-      },
-      // Enterprise — monthly (Contact sales)
-      {
-        id: 'enterprise_monthly',
-        name: 'Enterprise',
-        price: 0,
-        currency: 'IDR',
-        description: 'For corporations — comprehensive tools',
-        features: [
-          'More usage*',
-          'Unlimited user accounts',
-          'Unlimited messages',
-          'Customized multi-expert system',
-          'Customized fine-tuning support',
-          'Direct customer support',
-        ],
-        contact: true,
-      },
-    ];
-  const annual: Plan[] = Array.isArray(pricing.annual)
-    ? pricing.annual
-    : [
-      // Core — annual
-      {
-        id: 'core_annual',
-        name: 'Core (Annual)',
-        price: 2870400,
-        currency: 'IDR',
-        description: 'For individuals — billed yearly',
-        features: [
-          '1 user account',
-          '~ 2,000 basic messages',
-          '~ 200 thinker messages',
-          'Advanced multi-expert system',
-          'Fine-tuned for business',
-          'Basic customer support',
-        ],
-      },
-      // Growth — annual (Popular)
-      {
-        id: 'growth_annual',
-        name: 'Growth (Annual)',
-        price: 19190400,
-        currency: 'IDR',
-        description: 'For startups — billed yearly',
-        features: [
-          'More usage*',
-          '5 user accounts',
-          '~ 4,000 basic messages',
-          '~ 400 thinker messages',
-          'Priority customer support',
-        ],
-        popular: true,
-      },
-      // Enterprise — annual (Contact sales)
-      {
-        id: 'enterprise_annual',
-        name: 'Enterprise (Annual)',
-        price: 0,
-        currency: 'IDR',
-        description: 'For corporations — billed yearly',
-        features: [
-          'More usage*',
-          'Unlimited user accounts',
-          'Unlimited messages',
-          'Customized multi-expert system',
-          'Customized fine-tuning support',
-          'Direct customer support',
-        ],
-        contact: true,
-      },
-    ];
+  const monthly: Plan[] = Array.isArray(pricing.monthly) ? pricing.monthly : [];
+  const annual: Plan[] = Array.isArray(pricing.annual) ? pricing.annual : [];
 
   return (
     <div className="mx-auto w-full max-w-[800px]">
@@ -214,6 +113,16 @@ export default async function BillingPage() {
 
         {/* Voucher Application */}
         <VoucherApplication refreshOnApplied />
+
+        {isAdmin && (
+          <div className="rounded-xl border p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="font-medium">Admin: Manage available plans</div>
+              <Link href="/admin/plans" className="text-sm underline">Open in Admin</Link>
+            </div>
+            <PricingPlansForm />
+          </div>
+        )}
 
         <BillingPlansSwitcher monthly={monthly} annual={annual} />
 

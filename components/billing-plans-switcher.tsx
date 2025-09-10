@@ -13,6 +13,7 @@ type Plan = {
   features?: string[];
   popular?: boolean;
   contact?: boolean;
+  contactUrl?: string;
 };
 
 function formatPrice(amount: number, currency?: string) {
@@ -68,9 +69,9 @@ export function BillingPlansSwitcher({
                   )}
                   <div>
                     {p.contact ? (
-                      <Link href="/" className="inline-block">
+                      <a href={p.contactUrl || '/contact'} className="inline-block" target={p.contactUrl && !p.contactUrl.startsWith('/') ? '_blank' : undefined} rel={p.contactUrl && !p.contactUrl.startsWith('/') ? 'noopener noreferrer' : undefined}>
                         <span className="inline-flex h-9 items-center rounded-md border px-3 text-sm">Contact Sales</span>
-                      </Link>
+                      </a>
                     ) : (
                       <BillingSubscribeClient planId={p.id} />
                     )}
@@ -111,9 +112,9 @@ export function BillingPlansSwitcher({
                   )}
                   <div>
                     {p.contact ? (
-                      <Link href="/" className="inline-block">
+                      <a href={p.contactUrl || '/contact'} className="inline-block" target={p.contactUrl && !p.contactUrl.startsWith('/') ? '_blank' : undefined} rel={p.contactUrl && !p.contactUrl.startsWith('/') ? 'noopener noreferrer' : undefined}>
                         <span className="inline-flex h-9 items-center rounded-md border px-3 text-sm">Contact Sales</span>
-                      </Link>
+                      </a>
                     ) : (
                       <BillingSubscribeClient planId={p.id} />
                     )}
