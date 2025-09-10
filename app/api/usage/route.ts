@@ -50,12 +50,13 @@ export async function GET(request: Request) {
     const standardMonthly = Number(
       (msgLimits && (msgLimits.standardMonthly as any)) ?? 1000,
     );
-    const premiumMonthly = Number(
-      (msgLimits && (msgLimits.premiumMonthly as any)) ?? 150,
+    // Support new key paidMonthly while remaining backward-compatible with premiumMonthly
+    const paidMonthly = Number(
+      (msgLimits && ((msgLimits.paidMonthly as any) ?? (msgLimits.premiumMonthly as any))) ?? 150,
     );
 
     const isPremium = Boolean(active);
-    const limit = isPremium ? premiumMonthly : standardMonthly;
+    const limit = isPremium ? paidMonthly : standardMonthly;
 
     const used = await getMonthlyMessageCountByUserId({
       id: user.id,
@@ -71,6 +72,14 @@ export async function GET(request: Request) {
       limit,
       remaining: Math.max(0, limit - used),
       planType: isPremium ? 'premium' : 'standard',
+      planId: active?.planId ?? null,
+      planLabel: active?.planId
+        ? (active.planId.toLowerCase().includes('growth')
+            ? 'Growth'
+            : active.planId.toLowerCase().includes('core')
+              ? 'Core'
+              : 'Paid')
+        : null,
       period: {
         start: periodStart.toISOString(),
         end: periodEnd.toISOString(),

@@ -9,6 +9,7 @@ import { SubmitButton } from '@/components/submit-button';
 
 import { toast } from '@/components/toast';
 import { signUp, getSession } from '@/lib/auth-client';
+import Image from 'next/image';
 // import { auth } from '@/lib/auth';
 
 function RegisterPageContent() {
@@ -58,7 +59,7 @@ function RegisterPageContent() {
               try {
                 const err = await resp.json();
                 console.error('Referral apply failed:', err);
-              } catch {}
+              } catch { }
               toast({ type: 'error', description: 'Failed to apply referral code.' });
             }
           }
@@ -80,6 +81,17 @@ function RegisterPageContent() {
   return (
     <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
       <div className="w-full max-w-md overflow-hidden rounded-2xl gap-12 flex flex-col">
+
+        <Link href="https://www.ai4.ceo" className='px-2 py-2 hover:bg-muted rounded-md cursor-pointer flex w-max mx-auto'>
+          <Image
+            src="/images/logo.svg"
+            alt="AI4CEO Logo"
+            width={24}
+            height={24}
+            className="w-40 h-auto mx-auto"
+          />
+        </Link>
+
         <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
           <h3 className="text-xl font-semibold dark:text-zinc-50">Sign Up</h3>
           <p className="text-sm text-gray-500 dark:text-zinc-400">

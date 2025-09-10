@@ -28,7 +28,7 @@ export default async function AdminSettingsPage() {
       <div className="rounded-xl border p-4 text-sm">
         <h2 className="font-medium mb-2">Monthly Message Limits</h2>
         <p className="text-muted-foreground mb-2">
-          Configure per-month message limits. Standard applies to users without an active subscription. Premium applies to users with an active subscription.
+          Configure per-month message limits. Standard applies to users without an active subscription. Paid applies to users with an active subscription.
         </p>
         <form method="post" action="/admin/api/settings" className="space-y-2">
           <input type="hidden" name="key" value="messageLimits" />
@@ -36,7 +36,7 @@ export default async function AdminSettingsPage() {
             className="border rounded px-2 py-1 font-mono"
             name="value"
             defaultValue={JSON.stringify(
-              (settings as any)?.messageLimits ?? { standardMonthly: 1000, premiumMonthly: 150 },
+              (settings as any)?.messageLimits ?? { standardMonthly: 1000, paidMonthly: 150 },
               null,
               2
             )}

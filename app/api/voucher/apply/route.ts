@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     // Handle different voucher types
     if (voucher.type === 'free_subscription') {
       // Create a free subscription
-      const planId = voucher.planId || 'premium_monthly';
+      const planId = voucher.planId || 'core_monthly';
       const duration = voucher.duration || '1_month';
 
       // Calculate subscription end date based on duration

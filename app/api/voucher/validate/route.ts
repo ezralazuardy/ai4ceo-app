@@ -57,7 +57,7 @@ export async function POST(request: Request) {
         duration: voucher.duration,
         description:
           voucher.type === 'free_subscription'
-            ? `Free ${voucher.planId || 'premium'} subscription for ${voucher.duration || '1 month'}`
+            ? `Free ${voucher.planId || 'core'} subscription for ${voucher.duration || '1 month'}`
             : `${voucher.discountValue}${voucher.discountType === 'percentage' ? '%' : ' IDR'} discount on your next subscription`,
       },
     });

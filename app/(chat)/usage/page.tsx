@@ -10,6 +10,8 @@ type UsageResponse = {
   limit: number;
   remaining: number;
   planType: 'standard' | 'premium';
+  planId?: string | null;
+  planLabel?: string | null;
   period: {
     start: string; // ISO
     end: string; // ISO
@@ -79,9 +81,10 @@ export default function UsagePage() {
   const planBadge = useMemo(() => {
     if (!data?.planType) return null;
     if (data.planType === 'premium') {
+      const label = data.planLabel || 'Paid';
       return (
         <span className="inline-flex items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 text-xs font-medium">
-          Premium plan
+          {label} plan
         </span>
       );
     }
@@ -90,7 +93,7 @@ export default function UsagePage() {
         Standard plan
       </span>
     );
-  }, [data?.planType]);
+  }, [data?.planType, data?.planLabel]);
 
   const years = useMemo(() => {
     const current = new Date().getFullYear();

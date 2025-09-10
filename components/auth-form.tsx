@@ -69,6 +69,7 @@ export function AuthForm({
           </Label>
 
           <Input
+            disabled={true}
             id="referralCode"
             name="referralCode"
             className="bg-muted text-md md:text-sm"
@@ -81,7 +82,8 @@ export function AuthForm({
             }}
           />
           <p className="text-xs text-muted-foreground">
-            Have a referral code? Enter it to get special benefits!
+            {/*Have a referral code? Enter it to get special benefits!*/}
+            Coming Soon! We&apos;re still cooking up something special for you.
           </p>
         </div>
       )}

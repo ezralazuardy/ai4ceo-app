@@ -7,12 +7,6 @@ export const runtime = 'nodejs';
 
 // Fallback static plan if admin settings are missing
 const FALLBACK_PLANS: Record<string, { amount: number; description: string; currency?: string }> = {
-  // Legacy ids
-  premium_monthly: { amount: 99000, description: 'Premium Monthly Subscription', currency: 'IDR' },
-  basic_monthly: { amount: 49000, description: 'Basic Monthly Subscription', currency: 'IDR' },
-  basic_annual: { amount: 490000, description: 'Basic Annual Subscription', currency: 'IDR' },
-  premium_annual: { amount: 990000, description: 'Premium Annual Subscription', currency: 'IDR' },
-  // New plans
   core_monthly: { amount: 299000, description: 'Core Monthly', currency: 'IDR' },
   growth_monthly: { amount: 1999000, description: 'Growth Monthly', currency: 'IDR' },
   core_annual: { amount: 2870400, description: 'Core Annual', currency: 'IDR' },
@@ -30,7 +24,7 @@ export async function POST(request: Request) {
     return new ChatSDKError('bad_request:api').toResponse();
   }
 
-  const planId = body.planId || 'premium_monthly';
+  const planId = body.planId || 'core_monthly';
   let plan = FALLBACK_PLANS[planId];
   // Try find in admin-configured settings
   try {

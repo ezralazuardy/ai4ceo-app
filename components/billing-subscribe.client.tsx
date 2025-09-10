@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 
 export function BillingSubscribeClient({
-  planId = 'premium_monthly',
+  planId = 'core_monthly',
 }: { planId?: string }) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

@@ -22,12 +22,12 @@ export default async function PricingPage() {
   const settings = await getSettings();
   const pricing = (settings?.pricingPlans as any) || {};
   const monthly: Plan[] = Array.isArray(pricing.monthly) ? pricing.monthly : [
-    { id: 'basic_monthly', name: 'Basic', price: 49000, currency: 'IDR', description: 'For starters', features: ['Up to 3,000 messages'], popular: false },
-    { id: 'premium_monthly', name: 'Premium', price: 99000, currency: 'IDR', description: 'Best for most', features: ['Higher limits', 'Priority support'], popular: true },
+    { id: 'core_monthly', name: 'Core', price: 299000, currency: 'IDR', description: 'For individuals and small teams', features: ['Essential features', 'Reasonable usage limits'], popular: true },
+    { id: 'growth_monthly', name: 'Growth', price: 1999000, currency: 'IDR', description: 'For growing teams', features: ['Higher limits', 'Priority support'], popular: false },
   ];
   const annual: Plan[] = Array.isArray(pricing.annual) ? pricing.annual : [
-    { id: 'basic_annual', name: 'Basic (Annual)', price: 490000, currency: 'IDR', description: '2 months free', features: ['Up to 36,000 messages'], popular: false },
-    { id: 'premium_annual', name: 'Premium (Annual)', price: 990000, currency: 'IDR', description: '2 months free', features: ['Higher limits', 'Priority support'], popular: true },
+    { id: 'core_annual', name: 'Core (Annual)', price: 2870400, currency: 'IDR', description: 'Save with annual billing', features: ['Essential features', 'Reasonable usage limits'], popular: true },
+    { id: 'growth_annual', name: 'Growth (Annual)', price: 19190400, currency: 'IDR', description: 'Best value for teams', features: ['Higher limits', 'Priority support'], popular: false },
   ];
 
   return (
