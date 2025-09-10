@@ -195,9 +195,9 @@ function PlansEditor({
                   />
                 </div>
                 {err.price && <p className="text-xs text-red-600 mt-1">{err.price}</p>}
-                <p className="text-xs text-muted-foreground mt-1">
+                {/*<p className="text-xs text-muted-foreground mt-1">
                   Symbols: Rp (IDR), $ (USD), S$ (SGD), € (EUR), £ (GBP), ¥ (JPY/CNY), A$ (AUD), C$ (CAD), ₹ (INR), HK$ (HKD). Non‑IDR prices are in minor units (e.g., cents).
-                </p>
+                </p>*/}
               </div>
             </div>
             <div className="grid md:grid-cols-4 gap-3">

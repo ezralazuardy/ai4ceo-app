@@ -10,6 +10,8 @@ type Plan = {
   description?: string;
   features?: string[];
   popular?: boolean;
+  contact?: boolean;
+  contactUrl?: string;
 };
 
 function formatPrice(amount: number, currency?: string) {
@@ -40,7 +42,7 @@ export default async function PricingPage() {
       {/* Toggle hint (static for SSR). If you want client toggle, we can add one later. */}
       <div className="grid md:grid-cols-2 gap-4">
         {monthly.map((p) => (
-          <div key={p.id} className={`rounded-xl border p-4 ${p.popular ? 'ring-1 ring-primary' : ''}`}>
+          <div key={p.id} className={`rounded-xl border p-4 ${p.popular ? 'ring-1 ring-primary' : ''} ${p.contact ? 'md:col-span-2' : ''}`}>
             {p.popular && (
               <div className="mb-2 inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs">Most Popular</div>
             )}
@@ -50,8 +52,12 @@ export default async function PricingPage() {
                 <div className="text-sm text-muted-foreground">{p.description || '—'}</div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-semibold">{formatPrice(p.price, p.currency)}</div>
-                <div className="text-xs text-muted-foreground">per month</div>
+                {!p.contact && (
+                  <>
+                    <div className="text-2xl font-semibold">{formatPrice(p.price, p.currency)}</div>
+                    <div className="text-xs text-muted-foreground">per month</div>
+                  </>
+                )}
               </div>
             </div>
             {Array.isArray(p.features) && p.features.length > 0 && (
@@ -62,7 +68,18 @@ export default async function PricingPage() {
               </ul>
             )}
             <div className="mt-4">
-              <BillingSubscribeClient planId={p.id} />
+              {p.contact ? (
+                <a
+                  href={p.contactUrl || '/contact'}
+                  className="inline-flex h-9 items-center rounded-md border px-3 text-sm"
+                  target={p.contactUrl && !p.contactUrl.startsWith('/') ? '_blank' : undefined}
+                  rel={p.contactUrl && !p.contactUrl.startsWith('/') ? 'noopener noreferrer' : undefined}
+                >
+                  Contact Sales
+                </a>
+              ) : (
+                <BillingSubscribeClient planId={p.id} />
+              )}
             </div>
           </div>
         ))}
@@ -72,7 +89,7 @@ export default async function PricingPage() {
         <h2 className="text-xl font-semibold mb-2">Annual Plans</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {annual.map((p) => (
-            <div key={p.id} className={`rounded-xl border p-4 ${p.popular ? 'ring-1 ring-primary' : ''}`}>
+            <div key={p.id} className={`rounded-xl border p-4 ${p.popular ? 'ring-1 ring-primary' : ''} ${p.contact ? 'md:col-span-2' : ''}`}>
               {p.popular && (
                 <div className="mb-2 inline-flex items-center rounded-full bg-primary/10 text-primary px-2 py-0.5 text-xs">Best Value</div>
               )}
@@ -82,8 +99,12 @@ export default async function PricingPage() {
                   <div className="text-sm text-muted-foreground">{p.description || '—'}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-semibold">{formatPrice(p.price, p.currency)}</div>
-                  <div className="text-xs text-muted-foreground">per year</div>
+                  {!p.contact && (
+                    <>
+                      <div className="text-2xl font-semibold">{formatPrice(p.price, p.currency)}</div>
+                      <div className="text-xs text-muted-foreground">per year</div>
+                    </>
+                  )}
                 </div>
               </div>
               {Array.isArray(p.features) && p.features.length > 0 && (
@@ -94,7 +115,18 @@ export default async function PricingPage() {
                 </ul>
               )}
               <div className="mt-4">
-                <BillingSubscribeClient planId={p.id} />
+                {p.contact ? (
+                  <a
+                    href={p.contactUrl || '/contact'}
+                    className="inline-flex h-9 items-center rounded-md border px-3 text-sm"
+                    target={p.contactUrl && !p.contactUrl.startsWith('/') ? '_blank' : undefined}
+                    rel={p.contactUrl && !p.contactUrl.startsWith('/') ? 'noopener noreferrer' : undefined}
+                  >
+                    Contact Sales
+                  </a>
+                ) : (
+                  <BillingSubscribeClient planId={p.id} />
+                )}
               </div>
             </div>
           ))}
