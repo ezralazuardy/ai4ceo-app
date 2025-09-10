@@ -202,12 +202,12 @@ export default async function BillingPage() {
               </p>
             </div>
           )}
-          {active.currentPeriodEnd && (
+          {active?.currentPeriodEnd && (
             <p className='text-sm'>
               <span className="font-medium">
                 {active.status === 'active' ? 'Renews' : 'Expires'}:
               </span>{' '}
-              {new Date(active.currentPeriodEnd).toLocaleString()}
+              {new Date(active?.currentPeriodEnd).toLocaleString()}
             </p>
           )}
         </div>
