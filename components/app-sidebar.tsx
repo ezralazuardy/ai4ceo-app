@@ -3,12 +3,10 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { PlusIcon } from '@/components/icons';
 import { SidebarHistory } from '@/components/sidebar-history';
-import { SidebarUserNav } from '@/components/sidebar-user-nav';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   useSidebar,
@@ -178,9 +176,7 @@ export function AppSidebar({ user, className }: { user: MinimalUser | undefined;
         </div>*/}
       </SidebarContent>
 
-      <SidebarFooter>
-        {user && <SidebarUserNav user={user} />}
-      </SidebarFooter>
+      {/* User menu moved to MainNav; footer removed from chat sidebar */}
     </Sidebar>
   );
 }

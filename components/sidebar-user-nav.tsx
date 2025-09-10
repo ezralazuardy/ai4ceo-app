@@ -30,7 +30,7 @@ export function SidebarUserNav({ user }: { user: MinimalUser }) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu >
           <DropdownMenuTrigger asChild>
             {isPending ? (
               <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent bg-background data-[state=open]:text-sidebar-accent-foreground h-10 justify-between">
@@ -73,7 +73,7 @@ export function SidebarUserNav({ user }: { user: MinimalUser }) {
           <DropdownMenuContent
             data-testid="user-nav-menu"
             side="top"
-            className="w-(--radix-popper-anchor-width)"
+            className="w-(--radix-popper-anchor-width) !ml-2"
           >
             {/*<DropdownMenuLabel className="text-xs">
               Signed in as {data?.user?.email ?? user?.email}

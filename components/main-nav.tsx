@@ -2,10 +2,18 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { BotIcon } from './icons'
 import { Settings as SettingsIcon, Shield } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 function NavItem({ href, active, icon, label }: { href: string; active?: boolean; icon: React.ReactNode; label: string }) {
   return (
@@ -26,13 +34,16 @@ function NavItem({ href, active, icon, label }: { href: string; active?: boolean
 
 export default function MainNav() {
   const pathname = usePathname()
-  const { data } = authClient.useSession()
+  const router = useRouter()
+  const { data, isPending } = authClient.useSession()
+  const { setTheme, resolvedTheme } = useTheme()
   const role = (data?.user as any)?.role as 'admin' | 'user' | undefined
 
   const isChat = pathname === '/' || pathname?.startsWith('/(chat)') || pathname?.startsWith('/chat')
   const isNews = pathname?.startsWith('/news')
   const isSettings = pathname?.startsWith('/settings')
   const isAdmin = pathname?.startsWith('/admin')
+  const displayName = (data?.user?.name as string) || (data?.user?.email as string) || 'Account'
 
   return (
     <aside
@@ -55,7 +66,51 @@ export default function MainNav() {
         )}
       </nav>
 
-      <div className="h-4" />
+      <div className="mt-auto border-t p-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="w-full flex flex-col items-center justify-center gap-1 rounded-md px-2 py-3 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/40"
+              aria-label="User menu"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-background border overflow-hidden">
+                <Image
+                  src={(data?.user?.image as string) || `https://avatar.vercel.sh/${data?.user?.email ?? 'user'}`}
+                  alt={(data?.user?.name as string) ?? (data?.user?.email as string) ?? 'User Avatar'}
+                  width={32}
+                  height={32}
+                />
+              </div>
+              <span className="w-full truncate leading-none text-center" title={displayName}>{displayName}</span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="end" alignOffset={8} className="w-56">
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onSelect={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            >
+              {`Toggle ${resolvedTheme === 'light' ? 'dark' : 'light'} mode`}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <button
+                type="button"
+                className="w-full text-left cursor-pointer"
+                onClick={() => {
+                  if (isPending) return
+                  authClient.signOut().then(() => {
+                    router.push('/')
+                    router.refresh()
+                  })
+                }}
+              >
+                Sign out
+              </button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </aside>
   )
 }
