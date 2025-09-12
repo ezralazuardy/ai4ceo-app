@@ -10,9 +10,18 @@ export const haskoy = localFont({
   preload: true,
 });
 
+export const switzer = localFont({
+  src: '../assets/fonts/switzer-variable.woff2',
+  variable: '--font-serif',
+  display: 'swap',
+  weight: '400 700',
+  style: 'normal',
+  preload: true,
+});
+
 export const gambarino = localFont({
   src: '../assets/fonts/gambarino-regular.woff2',
-  variable: '--font-serif',
+  // variable: '--font-serif',
   display: 'swap',
   weight: '400',
   style: 'normal',

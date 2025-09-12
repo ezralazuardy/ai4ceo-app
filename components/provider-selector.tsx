@@ -27,6 +27,7 @@ export function ProviderSelector({
       <SelectContent>
         <SelectItem value="groq">Groq</SelectItem>
         <SelectItem value="vertex">Google Vertex</SelectItem>
+        <SelectItem value="azure">Azure OpenAI</SelectItem>
       </SelectContent>
     </Select>
   );

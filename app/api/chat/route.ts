@@ -310,6 +310,7 @@ export async function POST(request: Request) {
                 providerPreference,
                 (settings?.modelOverridesGroq as any) ?? null,
                 (settings?.modelOverridesVertex as any) ?? null,
+                (settings?.modelOverridesAzure as any) ?? null,
               );
               let streamed = false;
               for (let i = 0; i < candidates.length; i++) {
@@ -417,6 +418,7 @@ export async function POST(request: Request) {
           providerPreference,
           (settings?.modelOverridesGroq as any) ?? null,
           (settings?.modelOverridesVertex as any) ?? null,
+          (settings?.modelOverridesAzure as any) ?? null,
         );
         (async () => {
           let streamed = false;

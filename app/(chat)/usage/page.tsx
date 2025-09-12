@@ -115,7 +115,7 @@ export default function UsagePage() {
       <div className="rounded-lg border bg-card text-card-foreground">
         <div className="px-4 py-3 border-b flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <div className="text-sm font-medium">Monthly Usage</div>
+            <div className="text-sm font-medium font-serif">Monthly Usage</div>
             {planBadge}
           </div>
           <div className="flex items-center gap-2">

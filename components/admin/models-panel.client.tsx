@@ -61,6 +61,15 @@ const DEFAULT_VERTEX_MODEL_MAP: Record<string, string> = {
   'artifact-model': 'gemini-1.5-pro',
 };
 
+const DEFAULT_AZURE_MODEL_MAP: Record<string, string> = {
+  'chat-model': 'gpt-4.1',
+  'chat-model-small': 'gpt-4.1',
+  'chat-model-large': 'gpt-4.1',
+  'chat-model-reasoning': 'gpt-4.1',
+  'title-model': 'gpt-4.1',
+  'artifact-model': 'gpt-4.1',
+};
+
 // Commented out for reference (OpenRouter defaults):
 // const DEFAULT_OPENROUTER_MODEL_MAP: Record<string, string> = {
 //   'chat-model': 'moonshotai/kimi-k2:free',
@@ -98,6 +107,11 @@ export default function AdminModelsPanel() {
       '/admin/api/models/vertex',
       fetcher,
     );
+  const { data: azureList, isLoading: loadingAzure, mutate: refreshAzure } =
+    useSWR<{ models: VertexModel[] }>(
+      '/admin/api/models/azure',
+      fetcher,
+    );
   const { data: settings } = useSWR<Record<string, any>>(
     '/admin/api/settings',
     fetcher,
@@ -105,6 +119,7 @@ export default function AdminModelsPanel() {
 
   const [overridesGroq, setOverridesGroq] = useState<Record<string, string>>({});
   const [overridesVertex, setOverridesVertex] = useState<Record<string, string>>({});
+  const [overridesAzure, setOverridesAzure] = useState<Record<string, string>>({});
   const [providerPref, setProviderPref] = useState<ProviderPreference>('groq');
 
   const groqModels = useMemo(
@@ -115,6 +130,10 @@ export default function AdminModelsPanel() {
     () => vertexList?.models ?? ([] as VertexModel[]),
     [vertexList?.models],
   );
+  const azureModels = useMemo(
+    () => azureList?.models ?? ([] as VertexModel[]),
+    [azureList?.models],
+  );
 
   const groqFromSettings = useMemo(
     () => (settings?.modelOverridesGroq as Record<string, string> | undefined) ?? undefined,
@@ -123,6 +142,10 @@ export default function AdminModelsPanel() {
   const vertexFromSettings = useMemo(
     () => (settings?.modelOverridesVertex as Record<string, string> | undefined) ?? undefined,
     [settings?.modelOverridesVertex],
+  );
+  const azureFromSettings = useMemo(
+    () => (settings?.modelOverridesAzure as Record<string, string> | undefined) ?? undefined,
+    [settings?.modelOverridesAzure],
   );
   const prefFromSettings = useMemo(
     () => (settings?.defaultProviderPreference as ProviderPreference) ?? 'groq',
@@ -138,9 +161,13 @@ export default function AdminModelsPanel() {
     else if (Object.keys(overridesVertex).length === 0)
       setOverridesVertex(DEFAULT_VERTEX_MODEL_MAP);
 
+    if (azureFromSettings) setOverridesAzure(azureFromSettings);
+    else if (Object.keys(overridesAzure).length === 0)
+      setOverridesAzure(DEFAULT_AZURE_MODEL_MAP);
+
     setProviderPref(prefFromSettings);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groqFromSettings, vertexFromSettings, prefFromSettings]);
+  }, [groqFromSettings, vertexFromSettings, azureFromSettings, prefFromSettings]);
 
   // Initialize enabled chat models & default from settings
   useEffect(() => {
@@ -170,6 +197,11 @@ export default function AdminModelsPanel() {
   const vertexOptions = useMemo(
     () => vertexModels.map((m) => ({ value: m.id, label: m.name || m.id })),
     [vertexModels],
+  );
+
+  const azureOptions = useMemo(
+    () => azureModels.map((m) => ({ value: m.id, label: m.name || m.id })),
+    [azureModels],
   );
 
   const [banner, setBanner] = useState<string | null>(null);
@@ -246,6 +278,17 @@ export default function AdminModelsPanel() {
       return;
     }
 
+    // Save Azure overrides
+    const formA = new FormData();
+    formA.set('key', 'modelOverridesAzure');
+    formA.set('value', JSON.stringify(overridesAzure, null, 2));
+    const resA = await fetch('/admin/api/settings', { method: 'POST', body: formA });
+    if (!resA.ok) {
+      setBanner('Failed to save Azure mappings');
+      setTimeout(() => setBanner(null), 2500);
+      return;
+    }
+
     // Save default provider preference
     const form3 = new FormData();
     form3.set('key', 'defaultProviderPreference');
@@ -263,13 +306,13 @@ export default function AdminModelsPanel() {
 
   return (
     <div className="max-w-4xl mx-auto">
-        {banner && (
-          <div className="pb-4">
-              <div className="mt-3 text-sm px-3 py-2 rounded-md border bg-muted/30 inline-block">
-                {banner}
-              </div>
+      {banner && (
+        <div className="pb-4">
+          <div className="mt-3 text-sm px-3 py-2 rounded-md border bg-muted/30 inline-block">
+            {banner}
           </div>
-        )}
+        </div>
+      )}
 
       <div className="space-y-4">
         {/* Chat Models Availability */}
@@ -518,6 +561,76 @@ export default function AdminModelsPanel() {
           </div>
         </div>
 
+        {/* Azure OpenAI Mappings */}
+        <div className="rounded-lg border bg-card p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold">Azure OpenAI Mappings</h3>
+              <p className="text-sm text-muted-foreground">
+                Configure which Azure OpenAI deployment names to use for each model type
+              </p>
+            </div>
+          </div>
+
+          {loadingAzure && (
+            <div className="text-sm text-muted-foreground py-4 text-center">
+              Loading Azure models...
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {managedIds.map((id) => {
+              const currentValue = overridesAzure[id] || DEFAULT_AZURE_MODEL_MAP[id] || '';
+              const Icon =
+                id === 'chat-model-small'
+                  ? BotIcon
+                  : id === 'chat-model-large'
+                    ? BoxIcon
+                    : id === 'chat-model-reasoning'
+                      ? InfoIcon
+                      : id === 'title-model'
+                        ? FileIcon
+                        : id === 'artifact-model'
+                          ? BoxIcon
+                          : BotIcon;
+              return (
+                <div key={id} className="rounded-md border p-3 flex gap-3 items-start bg-background">
+                  <div className="mt-1 text-foreground">
+                    <Icon size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium mb-2">{friendlyName(id, defaultChatModels)}</div>
+                    <Label className="sr-only" htmlFor={`azure-${id}`}>
+                      {friendlyName(id)} (Azure)
+                    </Label>
+                    <Select
+                      value={currentValue}
+                      onValueChange={(v) => setOverridesAzure((prev) => ({ ...prev, [id]: v }))}
+                    >
+                      <SelectTrigger id={`azure-${id}`} className="w-full">
+                        <SelectValue placeholder="Select Azure deployment" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-80">
+                        {azureOptions.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                        {/* Fallback options if API doesn't return models */}
+                        {azureOptions.length === 0 && (
+                          <>
+                            <SelectItem value="gpt-4.1">gpt-4.1</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Hidden OpenRouter section - kept for reference if needed later */}
         {/*
         <div className="rounded-lg border bg-card p-4 space-y-4" style={{ display: 'none' }}>
@@ -535,7 +648,7 @@ export default function AdminModelsPanel() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => { refreshGroq(); refreshVertex(); }}>
+            <Button variant="outline" onClick={() => { refreshGroq(); refreshVertex(); refreshAzure(); }}>
               Refresh Models
             </Button>
             <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>

@@ -1,6 +1,6 @@
 import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
-import { haskoy, gambarino, geistMono } from '@/lib/fonts';
+import { haskoy, gambarino, switzer, geistMono } from '@/lib/fonts';
 import { ThemeProvider } from '@/components/theme-provider';
 
 import './globals.css';
@@ -72,7 +72,7 @@ export default async function RootLayout({
       // prop is necessary to avoid the React hydration mismatch warning.
       // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
       suppressHydrationWarning
-      className={`${haskoy.variable} ${gambarino.variable} ${geistMono.variable}`}
+      className={`${haskoy.variable} ${switzer.variable} ${geistMono.variable}`}
     >
       <head>
         <script

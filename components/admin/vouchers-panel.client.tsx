@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import {
   Card,
   CardContent,
@@ -51,6 +52,7 @@ import {
   updateVoucherAction,
   type ActionState,
 } from '@/app/admin/vouchers/actions';
+import { IconFileArrowRight } from '@tabler/icons-react';
 
 interface VoucherRow {
   id: string;
@@ -234,7 +236,7 @@ export function AdminVouchersPanel() {
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="size-4 mr-2" />
+              <Plus className="size-4" />
               Create Voucher
             </Button>
           </DialogTrigger>
@@ -516,6 +518,7 @@ export function AdminVouchersPanel() {
               window.open(url, '_blank');
             }}
           >
+            <IconFileArrowRight className='size-4' />
             Export CSV
           </Button>
         </div>
@@ -535,12 +538,54 @@ export function AdminVouchersPanel() {
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant={voucher.isActive ? 'default' : 'secondary'}>
+                  <Badge className="capitalize" variant={voucher.isActive ? 'default' : 'secondary'}>
                     {voucher.isActive ? 'Active' : 'Inactive'}
                   </Badge>
-                  <Badge variant="outline">{voucher.type}</Badge>
+                  <Badge variant="outline" className="capitalize">{voucher.type}</Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className='flex justify-between w-full'>
+                <div className=" grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className='flex items-center gap-2'>
+                    <span className="font-semibold">Usage:</span>{' '}
+                    {voucher.currentUsages}
+                    {voucher.maxUsages && ` / ${voucher.maxUsages}`}
+                  </div>
+                  {voucher.discountType && voucher.discountValue && (
+                    <div className='flex items-center gap-2'>
+                      <span className="font-semibold">Discount:</span>{' '}
+                      {voucher.discountValue}
+                      {voucher.discountType === 'percentage' ? '%' : ' IDR'}
+                    </div>
+                  )}
+                  {voucher.planId && (
+                    <div className='flex items-center gap-2'>
+                      <span className="font-semibold">Plan:</span> {voucher.planId}
+                    </div>
+                  )}
+                  {voucher.duration && (
+                    <div className='flex items-center gap-2'>
+                      <span className="font-semibold">Duration:</span>{' '}
+                      {voucher.duration}
+                    </div>
+                  )}
+                  <div className='flex items-center gap-2'>
+                    <span className="font-medium">Valid From:</span>{' '}
+                    {new Date(voucher.validFrom).toLocaleDateString()}
+                  </div>
+                  {voucher.validUntil && (
+                    <div className='flex items-center gap-2'>
+                      <span className="font-medium">Valid Until:</span>{' '}
+                      {new Date(voucher.validUntil).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+
+                <div className='flex gap-1'>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => setEditingVoucher(voucher)}
                   >
@@ -551,8 +596,8 @@ export function AdminVouchersPanel() {
                   </Form>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="size-4 text-red-500" />
+                      <Button variant="destructive" size="sm">
+                        <Trash2 className="size-4" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -576,43 +621,6 @@ export function AdminVouchersPanel() {
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Usage:</span>{' '}
-                  {voucher.currentUsages}
-                  {voucher.maxUsages && ` / ${voucher.maxUsages}`}
-                </div>
-                {voucher.discountType && voucher.discountValue && (
-                  <div>
-                    <span className="font-medium">Discount:</span>{' '}
-                    {voucher.discountValue}
-                    {voucher.discountType === 'percentage' ? '%' : ' IDR'}
-                  </div>
-                )}
-                {voucher.planId && (
-                  <div>
-                    <span className="font-medium">Plan:</span> {voucher.planId}
-                  </div>
-                )}
-                {voucher.duration && (
-                  <div>
-                    <span className="font-medium">Duration:</span>{' '}
-                    {voucher.duration}
-                  </div>
-                )}
-                <div>
-                  <span className="font-medium">Valid From:</span>{' '}
-                  {new Date(voucher.validFrom).toLocaleDateString()}
-                </div>
-                {voucher.validUntil && (
-                  <div>
-                    <span className="font-medium">Valid Until:</span>{' '}
-                    {new Date(voucher.validUntil).toLocaleDateString()}
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -649,7 +657,7 @@ export function AdminVouchersPanel() {
           {editingVoucher && (
             <Form action={updateAction}>
               <input type="hidden" name="id" value={editingVoucher.id} />
-              <div className="grid gap-4 py-4">
+              <div className="grid gap-4 pb-4">
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label className="text-right">Status</Label>
                   <input
@@ -657,23 +665,20 @@ export function AdminVouchersPanel() {
                     name="isActive"
                     value={editingVoucher.isActive ? 'true' : 'false'}
                   />
-                  <Select
-                    value={editingVoucher.isActive ? 'active' : 'inactive'}
-                    onValueChange={(value) =>
-                      setEditingVoucher({
-                        ...editingVoucher,
-                        isActive: value === 'active',
-                      })
-                    }
-                  >
-                    <SelectTrigger className="col-span-4">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="col-span-3 flex items-center space-x-2">
+                    <Switch
+                      checked={editingVoucher.isActive}
+                      onCheckedChange={(checked) =>
+                        setEditingVoucher({
+                          ...editingVoucher,
+                          isActive: checked,
+                        })
+                      }
+                    />
+                    <Label className="text-sm">
+                      {editingVoucher.isActive ? 'Active' : 'Inactive'}
+                    </Label>
+                  </div>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label className="text-right">Max Uses</Label>

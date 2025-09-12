@@ -37,6 +37,7 @@ export async function generateTitleFromUserMessage({
     providerPreference,
     (settings?.modelOverridesGroq as any) ?? null,
     (settings?.modelOverridesVertex as any) ?? null,
+    (settings?.modelOverridesAzure as any) ?? null,
   );
   for (let i = 0; i < candidates.length; i++) {
     const c = candidates[i];
