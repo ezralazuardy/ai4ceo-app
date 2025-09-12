@@ -29,6 +29,7 @@ import type { ChatModel } from '@/lib/ai/models';
 import { BotIcon, BoxIcon, FileIcon, InfoIcon } from '@/components/icons';
 import { ProviderSelector } from '@/components/provider-selector';
 import type { ProviderPreference } from '@/lib/ai/providers';
+import { IconArticle, IconBrain, IconRobot, IconVersions } from '@tabler/icons-react';
 
 type GroqModel = { id: string; name: string };
 type VertexModel = { id: string; name: string };
@@ -305,7 +306,7 @@ export default function AdminModelsPanel() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="mx-auto">
       {banner && (
         <div className="pb-4">
           <div className="mt-3 text-sm px-3 py-2 rounded-md border bg-muted/30 inline-block">
@@ -340,11 +341,11 @@ export default function AdminModelsPanel() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div>
+          <div className="flex w-full gap-4">
+            <div className='flex justify-between items-center w-full'>
               <Label htmlFor="default-chat-model" className="text-sm font-medium">Default Chat Model</Label>
               <Select value={defaultChatModelId} onValueChange={(v) => setDefaultChatModelId(v)}>
-                <SelectTrigger id="default-chat-model" className="w-full mt-1">
+                <SelectTrigger id="default-chat-model" className="w-max">
                   <SelectValue placeholder="Select default model" />
                 </SelectTrigger>
                 <SelectContent className="max-h-80">
@@ -360,7 +361,7 @@ export default function AdminModelsPanel() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {defaultChatModels.map((m) => {
               const checked = enabledChatModelIds.includes(m.id);
               return (
@@ -389,7 +390,7 @@ export default function AdminModelsPanel() {
         </div>
 
         {/* Provider Preference */}
-        <div className="rounded-lg border bg-card p-4 space-y-4">
+        <div className="rounded-lg border bg-card p-4 flex justify-between items-center">
           <div>
             <h3 className="font-semibold">Default Provider</h3>
             <p className="text-sm text-muted-foreground">Select which provider to use by default</p>
@@ -433,28 +434,28 @@ export default function AdminModelsPanel() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {managedIds.map((id) => {
               const currentValue = overridesGroq[id] || DEFAULT_GROQ_MODEL_MAP[id] || '';
               const Icon =
                 id === 'chat-model-small'
-                  ? BotIcon
+                  ? IconRobot
                   : id === 'chat-model-large'
-                    ? BoxIcon
+                    ? IconVersions
                     : id === 'chat-model-reasoning'
-                      ? InfoIcon
+                      ? IconBrain
                       : id === 'title-model'
-                        ? FileIcon
+                        ? IconArticle
                         : id === 'artifact-model'
-                          ? BoxIcon
-                          : BotIcon;
+                          ? IconVersions
+                          : IconRobot;
               return (
-                <div key={id} className="rounded-md border p-3 flex gap-3 items-start bg-background">
-                  <div className="mt-1 text-foreground">
-                    <Icon size={16} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium mb-2">{friendlyName(id, defaultChatModels)}</div>
+                <div key={id} className="rounded-md border p-3 flex gap-2 items-start bg-background">
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="text-foreground flex gap-2 items-center">
+                      <Icon size={16} />
+                      <div className="text-sm font-medium">{friendlyName(id, defaultChatModels)}</div>
+                    </div>
                     <Label className="sr-only" htmlFor={`groq-${id}`}>
                       {friendlyName(id)} (Groq)
                     </Label>
@@ -514,46 +515,48 @@ export default function AdminModelsPanel() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {managedIds.map((id) => {
               const currentValue = overridesVertex[id] || DEFAULT_VERTEX_MODEL_MAP[id] || '';
               const Icon =
                 id === 'chat-model-small'
-                  ? BotIcon
+                  ? IconRobot
                   : id === 'chat-model-large'
-                    ? BoxIcon
+                    ? IconVersions
                     : id === 'chat-model-reasoning'
-                      ? InfoIcon
+                      ? IconBrain
                       : id === 'title-model'
-                        ? FileIcon
+                        ? IconArticle
                         : id === 'artifact-model'
-                          ? BoxIcon
-                          : BotIcon;
+                          ? IconVersions
+                          : IconRobot;
               return (
-                <div key={id} className="rounded-md border p-3 flex gap-3 items-start bg-background">
-                  <div className="mt-1 text-foreground">
-                    <Icon size={16} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium mb-2">{friendlyName(id, defaultChatModels)}</div>
-                    <Label className="sr-only" htmlFor={`vertex-${id}`}>
-                      {friendlyName(id)} (Vertex)
-                    </Label>
-                    <Select
-                      value={currentValue}
-                      onValueChange={(v) => setOverridesVertex((prev) => ({ ...prev, [id]: v }))}
-                    >
-                      <SelectTrigger id={`vertex-${id}`} className="w-full">
-                        <SelectValue placeholder="Select Vertex model" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-80">
-                        {vertexOptions.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div key={id} className="rounded-md border p-3 flex gap-2 items-start bg-background">
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="text-foreground flex gap-2 items-center">
+                      <Icon size={16} />
+                      <div className="text-sm font-medium">{friendlyName(id, defaultChatModels)}</div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <Label className="sr-only" htmlFor={`vertex-${id}`}>
+                        {friendlyName(id)} (Vertex)
+                      </Label>
+                      <Select
+                        value={currentValue}
+                        onValueChange={(v) => setOverridesVertex((prev) => ({ ...prev, [id]: v }))}
+                      >
+                        <SelectTrigger id={`vertex-${id}`} className="w-full">
+                          <SelectValue placeholder="Select Vertex model" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-80">
+                          {vertexOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               );
@@ -578,52 +581,54 @@ export default function AdminModelsPanel() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {managedIds.map((id) => {
               const currentValue = overridesAzure[id] || DEFAULT_AZURE_MODEL_MAP[id] || '';
               const Icon =
                 id === 'chat-model-small'
-                  ? BotIcon
+                  ? IconRobot
                   : id === 'chat-model-large'
-                    ? BoxIcon
+                    ? IconVersions
                     : id === 'chat-model-reasoning'
-                      ? InfoIcon
+                      ? IconBrain
                       : id === 'title-model'
-                        ? FileIcon
+                        ? IconArticle
                         : id === 'artifact-model'
-                          ? BoxIcon
-                          : BotIcon;
+                          ? IconVersions
+                          : IconRobot;
               return (
-                <div key={id} className="rounded-md border p-3 flex gap-3 items-start bg-background">
-                  <div className="mt-1 text-foreground">
+                <div key={id} className="rounded-md border p-3 flex gap-2 items-start bg-background">
+
+                  <div className="flex-1 min-w-0 space-y-2"><div className="text-foreground flex gap-2 items-center">
                     <Icon size={16} />
+                    <div className="text-sm font-medium">{friendlyName(id, defaultChatModels)}</div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium mb-2">{friendlyName(id, defaultChatModels)}</div>
-                    <Label className="sr-only" htmlFor={`azure-${id}`}>
-                      {friendlyName(id)} (Azure)
-                    </Label>
-                    <Select
-                      value={currentValue}
-                      onValueChange={(v) => setOverridesAzure((prev) => ({ ...prev, [id]: v }))}
-                    >
-                      <SelectTrigger id={`azure-${id}`} className="w-full">
-                        <SelectValue placeholder="Select Azure deployment" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-80">
-                        {azureOptions.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                        {/* Fallback options if API doesn't return models */}
-                        {azureOptions.length === 0 && (
-                          <>
-                            <SelectItem value="gpt-4.1">gpt-4.1</SelectItem>
-                          </>
-                        )}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex-1 min-w-0">
+                      <Label className="sr-only" htmlFor={`azure-${id}`}>
+                        {friendlyName(id)} (Azure)
+                      </Label>
+                      <Select
+                        value={currentValue}
+                        onValueChange={(v) => setOverridesAzure((prev) => ({ ...prev, [id]: v }))}
+                      >
+                        <SelectTrigger id={`azure-${id}`} className="w-full">
+                          <SelectValue placeholder="Select Azure deployment" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-80">
+                          {azureOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                          {/* Fallback options if API doesn't return models */}
+                          {azureOptions.length === 0 && (
+                            <>
+                              <SelectItem value="gpt-4.1">gpt-4.1</SelectItem>
+                            </>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
               );
@@ -646,14 +651,14 @@ export default function AdminModelsPanel() {
         </div>
         */}
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-end">
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => { refreshGroq(); refreshVertex(); refreshAzure(); }}>
               Refresh Models
             </Button>
             <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
               <AlertDialogTrigger asChild>
-                <Button onClick={() => setConfirmOpen(true)}>Save Configuration</Button>
+                <Button onClick={() => setConfirmOpen(true)}>Save</Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>

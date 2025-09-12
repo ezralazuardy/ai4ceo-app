@@ -58,11 +58,11 @@ export default async function AdminLayout({
             <div className="mb-4">
               <AdminNav items={items} />
             </div>
-            <div className="rounded-lg border bg-card p-4">
+            <div className="rounded-lg border bg-card p-3">
               <div className="text-sm">
                 <div className="font-medium">Logged in as</div>
                 <div className="text-muted-foreground">{user.email}</div>
-                <div className="text-xs text-muted-foreground mt-1">Role: {user.role}</div>
+                {/*<div className="text-xs text-muted-foreground mt-1">Role: {user.role}</div>*/}
               </div>
             </div>
           </aside>

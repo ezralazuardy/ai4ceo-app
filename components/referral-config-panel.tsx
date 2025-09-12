@@ -296,12 +296,10 @@ export function ReferralConfigPanel() {
       {/* Save Button */}
       <div className="flex justify-end">
         <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? (
+          {isSaving && (
             <Loader2 className="size-4 animate-spin mr-2" />
-          ) : (
-            <Save className="size-4" />
           )}
-          Save Configuration
+          Save
         </Button>
       </div>
     </div>
